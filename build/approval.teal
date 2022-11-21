@@ -1,0 +1,324 @@
+#pragma version 5
+txn ApplicationID
+int 0
+==
+bnz main_l33
+txn OnCompletion
+int DeleteApplication
+==
+bnz main_l32
+txn OnCompletion
+int UpdateApplication
+==
+bnz main_l31
+txn OnCompletion
+int OptIn
+==
+bnz main_l30
+txn OnCompletion
+int CloseOut
+==
+bnz main_l29
+txn OnCompletion
+int NoOp
+==
+bnz main_l7
+err
+main_l7:
+txna ApplicationArgs 0
+byte "inputStone"
+==
+bnz main_l28
+txna ApplicationArgs 0
+byte "transferStone"
+==
+bnz main_l27
+txna ApplicationArgs 0
+byte "evaluate"
+==
+bnz main_l26
+txna ApplicationArgs 0
+byte "authorizeBatch"
+==
+bnz main_l25
+txna ApplicationArgs 0
+byte "transport"
+==
+bnz main_l24
+txna ApplicationArgs 0
+byte "initiateBatch"
+==
+bnz main_l23
+txna ApplicationArgs 0
+byte "cancelBatch"
+==
+bnz main_l22
+txna ApplicationArgs 0
+byte "editStones"
+==
+bnz main_l21
+txna ApplicationArgs 0
+byte "createProduct"
+==
+bnz main_l20
+txna ApplicationArgs 0
+byte "buyStone"
+==
+bnz main_l18
+err
+main_l18:
+txna ApplicationArgs 1
+txna ApplicationArgs 2
+callsub sub7
+main_l19:
+int 0
+return
+main_l20:
+txna ApplicationArgs 1
+txna ApplicationArgs 2
+txna ApplicationArgs 3
+callsub sub6
+b main_l19
+main_l21:
+txna ApplicationArgs 1
+txna ApplicationArgs 2
+txna ApplicationArgs 3
+callsub sub2
+b main_l19
+main_l22:
+callsub sub4
+b main_l19
+main_l23:
+callsub sub3
+b main_l19
+main_l24:
+txna ApplicationArgs 1
+callsub sub5
+b main_l19
+main_l25:
+callsub sub8
+b main_l19
+main_l26:
+txna ApplicationArgs 1
+txna ApplicationArgs 2
+txna ApplicationArgs 3
+callsub sub2
+b main_l19
+main_l27:
+txna ApplicationArgs 1
+callsub sub1
+b main_l19
+main_l28:
+txna ApplicationArgs 1
+callsub sub0
+b main_l19
+main_l29:
+int 0
+return
+main_l30:
+int 0
+return
+main_l31:
+int 0
+return
+main_l32:
+int 0
+return
+main_l33:
+byte "owner"
+txn Sender
+app_global_put
+byte "maxWeight"
+int 20
+app_global_put
+byte "currentBatchWeight"
+int 0
+app_global_put
+byte "totalBatches"
+int 50
+app_global_put
+byte "currentBatch"
+int 1
+app_global_put
+byte "stoneType"
+byte "rubie"
+app_global_put
+byte "processStatus"
+int 1
+app_global_put
+byte "evaluator"
+addr 6ZHGHH5Z5CTPCF5WCESXMGRSVK7QJETR63M3NY5FJCUYDHO57VTCMJOBGY
+app_global_put
+byte "processor"
+addr 6ZHGHH5Z5CTPCF5WCESXMGRSVK7QJETR63M3NY5FJCUYDHO57VTCMJOBGY
+app_global_put
+int 1
+return
+sub0: // inner_asset_creation
+store 0
+byte "processStatus"
+app_global_get
+int 1
+==
+assert
+itxn_begin
+int acfg
+itxn_field TypeEnum
+global CurrentApplicationAddress
+itxn_field ConfigAssetClawback
+txn Sender
+itxn_field ConfigAssetReserve
+int 1
+itxn_field ConfigAssetDefaultFrozen
+load 0
+gtxnsa ApplicationArgs 0
+itxn_field ConfigAssetName
+load 0
+gtxnsa ApplicationArgs 1
+itxn_field ConfigAssetUnitName
+load 0
+gtxnsa ApplicationArgs 2
+btoi
+itxn_field ConfigAssetTotal
+load 0
+gtxnsa ApplicationArgs 3
+itxn_field ConfigAssetURL
+load 0
+gtxnsa ApplicationArgs 4
+btoi
+itxn_field ConfigAssetDecimals
+load 0
+gtxnsa ApplicationArgs 5
+itxn_field ConfigAssetMetadataHash
+byte "evaluator"
+itxn_field ConfigAssetManager
+itxn_submit
+retsub
+sub1: // asset_transfer_to_owner
+store 1
+byte "processStatus"
+app_global_get
+int 1
+==
+assert
+itxn_begin
+int axfer
+itxn_field TypeEnum
+load 1
+itxn_field XferAsset
+byte "owner"
+itxn_field AssetReceiver
+itxn_submit
+retsub
+sub2: // asset_first_edit
+store 4
+store 3
+store 2
+byte "processStatus"
+app_global_get
+int 1
+==
+assert
+itxn_begin
+int acfg
+itxn_field TypeEnum
+byte "processor"
+itxn_field ConfigAssetManager
+load 2
+itxn_field ConfigAssetMetadataHash
+load 3
+itxn_field ConfigAssetURL
+itxn_submit
+retsub
+sub3: // initiate_batch
+byte "totalBatches"
+byte "totalBatches"
+app_global_get
+int 1
++
+app_global_put
+byte "processStatus"
+int 1
+app_global_put
+byte "currentBatchWeight"
+int 0
+app_global_put
+retsub
+sub4: // calncel_batch
+byte "totalBatches"
+byte "totalBatches"
+app_global_get
+int 1
+-
+app_global_put
+byte "currentBatchWeight"
+int 0
+app_global_put
+retsub
+sub5: // set_url
+store 5
+byte "processStatus"
+app_global_get
+int 2
+==
+assert
+byte "url"
+load 5
+app_global_put
+byte "processStatus"
+byte "processStatus"
+app_global_get
+int 1
++
+app_global_put
+retsub
+sub6: // asset_second_edit
+store 8
+store 7
+store 6
+byte "processStatus"
+app_global_get
+int 3
+==
+assert
+itxn_begin
+int acfg
+itxn_field TypeEnum
+byte "owner"
+itxn_field ConfigAssetManager
+load 6
+itxn_field ConfigAssetMetadataHash
+load 7
+itxn_field ConfigAssetURL
+itxn_submit
+retsub
+sub7: // buy_asset
+store 10
+store 9
+itxn_begin
+int axfer
+itxn_field TypeEnum
+load 9
+itxn_field XferAsset
+load 10
+itxn_field AssetReceiver
+itxn_submit
+retsub
+sub8: // increment_process_status
+byte "processStatus"
+app_global_get
+int 6
+!=
+assert
+byte "evaluator"
+app_global_get
+txn Sender
+==
+assert
+byte "processStatus"
+byte "processStatus"
+app_global_get
+int 1
++
+app_global_put
+retsub

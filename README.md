@@ -22,8 +22,4 @@
 6. Use Python interpreter: `./venv/Scripts/python.exe`
     VSCode: `Python: Select Interpreter`
 
-# Links
-- [Youtube Pyteal Course](https://youtube.com/playlist?list=PLpAdAjL5F75CNnmGbz9Dm_k-z5I6Sv9_x)
-- [Official Algorand Smart Contract Guidelines](https://developer.algorand.org/docs/get-details/dapps/avm/teal/guidelines/)
-- [PyTeal Documentation](https://pyteal.readthedocs.io/en/latest/index.html)
-- [Algorand DevRel Example Contracts](https://github.com/algorand/smart-contracts)
+7. Contract reseides in build folder
